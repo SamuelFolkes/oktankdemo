@@ -19,11 +19,11 @@ provider:
     "name": "oktank-serverless-demo"
 
 package:
-  artifact: target/oktank-serverless-demo-1.0-lambda-package.zip 
+  artifact: target/oktankdemo-1.0-lambda-package.zip
 
 functions:
   pets:
-    handler: com.oktank.serverless.demo.StreamLambdaHandler::handleRequest
+    handler: com.oktank.demo.StreamLambdaHandler::handleRequest
     events:
       - http:
           path: /pets
