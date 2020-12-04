@@ -69,8 +69,7 @@ public class PetsController {
 
         Pet[] outputPets = new Pet[queryLimit];
         DataService ds = DataService.getInstance();
-        ExecuteStatementResult result = ds.Query("select * from pets","arn","oktankdemo","secretarn");
-
+        ExecuteStatementResult result = ds.Query("select * from pets","arn:aws:rds:us-east-1:297891556513:cluster:oktankdemo-cluster","oktankdemo","arn:aws:secretsmanager:us-east-1:297891556513:secret:DBClusterSecret-SvV13wsKTnEO-Q0tzsX");
         int i = 0;
         for (List<Field> fields: result.getRecords()) {
             String id = fields.get(0).getStringValue();
