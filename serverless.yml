@@ -38,23 +38,6 @@ functions:
       - http:
         path: /pets
         method: get
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId:
-            Ref: ApiGatewayAuthorizer
-          scopes:
-            - oktank/read
-            - oktank/write
-          cors:
-            origin: 'http://localhost:3000'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
       - http:
           path: /pets
           method: post
