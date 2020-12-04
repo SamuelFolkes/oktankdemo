@@ -8,10 +8,10 @@ custom:
   userPoolClientName: oktank-user-pool-client-${self:custom.stage}
   environment:
     DB_CLUSTER_ARN:
-      PROD: ""
+      PROD: "arn:aws:rds:us-east-1:895848145837:cluster:oktankdemo-cluster"
       DEV: "arn:aws:rds:us-east-1:297891556513:cluster:oktankdemo-cluster"
     SECRET_ARN:
-      PROD: ""
+      PROD: "arn:aws:secretsmanager:us-east-1:895848145837:secret:DBClusterSecret-FsL5g77Cwsw6-SBwnjV"
       DEV: "arn:aws:secretsmanager:us-east-1:297891556513:secret:DBClusterSecret-SvV13wsKTnEO-Q0tzsX"
 
 provider:
@@ -36,8 +36,25 @@ functions:
     handler: com.oktank.demo.StreamLambdaHandler::handleRequest
     events:
       - http:
-          path: /pets
-          method: get
+        path: /pets
+        method: get
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: ApiGatewayAuthorizer
+          scopes:
+            - oktank/read
+            - oktank/write
+          cors:
+            origin: 'http://localhost:3000'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
       - http:
           path: /pets
           method: post
