@@ -43,7 +43,6 @@ public class PetsController {
         if (newPet.getName() == null || newPet.getBreed() == null) {
             return null;
         }
-
         Pet dbPet = newPet;
         dbPet.setId(UUID.randomUUID().toString());
         return dbPet;
@@ -56,20 +55,9 @@ public class PetsController {
             queryLimit = limit.get();
         }
 
-        /*Pet[] outputPets = new Pet[queryLimit];
-
-        for (int i = 0; i < queryLimit; i++) {
-            Pet newPet = new Pet();
-            newPet.setId(UUID.randomUUID().toString());
-            newPet.setName(PetData.getRandomName());
-            newPet.setBreed(PetData.getRandomBreed());
-            newPet.setDateOfBirth(PetData.getRandomDoB());
-            outputPets[i] = newPet;
-        }*/
-
         Pet[] outputPets = new Pet[queryLimit];
         DataService ds = DataService.getInstance();
-        ExecuteStatementResult result = ds.Query("select * from pets","arn:aws:rds:us-east-1:297891556513:cluster:oktankdemo-cluster","oktankdemo","arn:aws:secretsmanager:us-east-1:297891556513:secret:DBClusterSecret-SvV13wsKTnEO-Q0tzsX");
+        ExecuteStatementResult result = ds.Query("select * from pets");
         int i = 0;
         for (List<Field> fields: result.getRecords()) {
             String id = fields.get(0).getStringValue();

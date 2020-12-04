@@ -6,6 +6,13 @@ custom:
   memorySize: 512
   userPoolName: oktank-user-pool-${self:custom.stage}
   userPoolClientName: oktank-user-pool-client-${self:custom.stage}
+  environment:
+    DB_CLUSTER_ARN:
+      PROD: ""
+      DEV: "arn:aws:rds:us-east-1:297891556513:cluster:oktankdemo-cluster"
+    SECRET_ARN:
+      PROD: ""
+      DEV: "arn:aws:secretsmanager:us-east-1:297891556513:secret:DBClusterSecret-SvV13wsKTnEO-Q0tzsX"
 
 provider:
   name: aws
@@ -17,6 +24,9 @@ provider:
   stackTags:
     "project": "AB3"
     "name": "oktank-serverless-demo"
+  environment:
+    DB_CLUSTER_ARN: ${self:custom.environment.DB_CLUSTER_ARN.${self:custom.stage}}
+    SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
 
 package:
   artifact: target/oktankdemo-1.0-lambda-package.zip

@@ -13,6 +13,9 @@ public class DataService {
     //public static final String SECRET_ARN = "arn:aws:secretsmanager:us-east-1:123456789012:secret:mysecret";
 
     // static variable single_instance of type Singleton
+
+    //String region = System.getenv("AWS_REGION")
+
     private static DataService single_instance = null;
 
     public static DataService getInstance()
@@ -22,13 +25,13 @@ public class DataService {
         return single_instance;
     }
 
-    public ExecuteStatementResult Query(String sql, String dbClusterArn, String dbName, String dbSecretArn) {
+    public ExecuteStatementResult Query(String sql) {
         AWSRDSData rdsData = AWSRDSDataClient.builder().build();
 
         ExecuteStatementRequest request = new ExecuteStatementRequest()
-                .withResourceArn(dbClusterArn)
-                .withSecretArn(dbSecretArn)
-                .withDatabase(dbName)
+                .withResourceArn(System.getenv("DB_CLUSTER_ARN"))
+                .withSecretArn(System.getenv("SECRET_ARN"))
+                .withDatabase("oktankdemo")
                 .withSql(sql);
 
         return rdsData.executeStatement(request);
