@@ -1,0 +1,8 @@
+com/oktank/demo/service/DataService.class
+com/oktank/demo/model/PetData.class
+com/oktank/demo/StreamLambdaHandler.class
+com/oktank/demo/controller/PetsController.class
+com/oktank/demo/Application.class
+com/oktank/demo/controller/PingController.class
+com/oktank/demo/model/Pet.class
+com/oktank/demo/model/Error.class
