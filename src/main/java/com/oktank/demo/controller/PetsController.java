@@ -45,6 +45,10 @@ public class PetsController {
         }
         Pet dbPet = newPet;
         dbPet.setId(UUID.randomUUID().toString());
+
+        DataService ds = DataService.getInstance();
+        ExecuteStatementResult result = ds.Query(String.format("INSERT INTO pets (id, name, breed, photo_url) VALUES (\'%s\', \'%s\', \'%s\', \'%s\')", dbPet.getId(), dbPet.getName(), dbPet.getBreed(), dbPet.getPhotoUrl()));
+
         return dbPet;
     }
 
