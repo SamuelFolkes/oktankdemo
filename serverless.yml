@@ -21,6 +21,8 @@ provider:
   cfnRole: ${opt:cfnRoleArn}
   region: ${self:custom.region}
   memorySize: ${self:custom.memorySize}
+  tracing:
+    lambda: true
   stackTags:
     "project": "AB3"
     "name": "oktank-serverless-demo"
