@@ -27,6 +27,7 @@ hs_err_pid*
 # misc
 target
 target/*
+target/**
 .project
 .classpath
 .gradle
