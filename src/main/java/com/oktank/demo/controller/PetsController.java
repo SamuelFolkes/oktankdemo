@@ -20,6 +20,9 @@ import com.oktank.demo.model.PetData;
 
 import com.oktank.demo.service.DataService;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,7 +56,7 @@ public class PetsController {
     }
 
     @RequestMapping(path = "/pets", method = RequestMethod.GET)
-    public Pet[] listPets(@RequestParam("limit") Optional<Integer> limit, Principal principal) {
+    public ResponseEntity<Pet[]> listPets(@RequestParam("limit") Optional<Integer> limit, Principal principal) {
         int queryLimit = 10;
         if (limit.isPresent()) {
             queryLimit = limit.get();
@@ -79,7 +82,13 @@ public class PetsController {
             System.out.println(String.format("Fetched row: string = %s", name));
         }
 
-        return outputPets;
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin","*");
+        responseHeaders.set("Access-Control-Allow-Credentials","true");
+        ResponseEntity responseEntity = new ResponseEntity(outputPets,responseHeaders,HttpStatus.OK);
+        return responseEntity;
+
+        //return outputPets;
     }
 
     @RequestMapping(path = "/pets/{petId}", method = RequestMethod.GET)

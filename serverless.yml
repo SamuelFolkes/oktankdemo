@@ -48,7 +48,7 @@ functions:
               - oktank/read
               - oktank/write
             cors:
-              origin: 'http://localhost:3000'
+              origin: '*'
               headers:
                 - Content-Type
                 - X-Amz-Date
@@ -68,7 +68,7 @@ functions:
               - oktank/read
               - oktank/write
           cors:
-            origin: 'http://localhost:3000'
+            origin: '*'
             headers:
               - Content-Type
               - X-Amz-Date
