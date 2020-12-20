@@ -57,7 +57,7 @@ public class PetsController {
         responseHeaders.set("Access-Control-Allow-Credentials","true");
         ResponseEntity responseEntity = new ResponseEntity(dbPet,responseHeaders,HttpStatus.OK);
         return responseEntity;
-        
+
     }
 
     @RequestMapping(path = "/pets", method = RequestMethod.GET)
@@ -91,6 +91,7 @@ public class PetsController {
         responseHeaders.set("Access-Control-Allow-Origin","*");
         responseHeaders.set("Access-Control-Allow-Credentials","true");
         ResponseEntity responseEntity = new ResponseEntity(outputPets,responseHeaders,HttpStatus.OK);
+        //comment
         return responseEntity;
 
     }
