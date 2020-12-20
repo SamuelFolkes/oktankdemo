@@ -42,7 +42,7 @@ import com.amazonaws.services.rdsdata.model.Field;
 @EnableWebMvc
 public class PetsController {
     @RequestMapping(path = "/pets", method = RequestMethod.POST)
-    public Pet createPet(@RequestBody Pet newPet) {
+    public ResponseEntity<Pet> createPet(@RequestBody Pet newPet) {
         if (newPet.getName() == null || newPet.getBreed() == null) {
             return null;
         }
@@ -52,7 +52,12 @@ public class PetsController {
         DataService ds = DataService.getInstance();
         ExecuteStatementResult result = ds.Query(String.format("INSERT INTO pets (id, name, breed, photo_url) VALUES (\'%s\', \'%s\', \'%s\', \'%s\')", dbPet.getId(), dbPet.getName(), dbPet.getBreed(), dbPet.getPhotoUrl()));
 
-        return dbPet;
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin","*");
+        responseHeaders.set("Access-Control-Allow-Credentials","true");
+        ResponseEntity responseEntity = new ResponseEntity(dbPet,responseHeaders,HttpStatus.OK);
+        return responseEntity;
+        
     }
 
     @RequestMapping(path = "/pets", method = RequestMethod.GET)
@@ -88,7 +93,6 @@ public class PetsController {
         ResponseEntity responseEntity = new ResponseEntity(outputPets,responseHeaders,HttpStatus.OK);
         return responseEntity;
 
-        //return outputPets;
     }
 
     @RequestMapping(path = "/pets/{petId}", method = RequestMethod.GET)
