@@ -17,6 +17,7 @@ public class Pet {
     private String breed;
     private String name;
     private String photoUrl;
+    private String photoBase64;
 
     public String getId() {
         return id;
@@ -48,6 +49,14 @@ public class Pet {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public String getPhotoBase64() {
+        return photoBase64;
+    }
+
+    public void setPhotoBase64(String photoBase64) {
+        this.photoBase64 = photoBase64;
     }
 }
 

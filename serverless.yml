@@ -16,7 +16,6 @@ custom:
 
 provider:
   name: aws
-  runtime: java8
   role: LambdaRole
   cfnRole: ${opt:cfnRoleArn}
   region: ${self:custom.region}
@@ -29,13 +28,35 @@ provider:
   environment:
     DB_CLUSTER_ARN: ${self:custom.environment.DB_CLUSTER_ARN.${self:custom.stage}}
     SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
+    BUCKET_NAME: oktankpets-demo-${self:custom.stage}
 
 package:
-  artifact: target/oktankdemo-1.0-lambda-package.zip
+  individually: true
 
 functions:
+  resize:
+    runtime: python3.8
+    package:
+      include:
+        - util/resize.py
+    handler: src/util/resize.lambda_handler
+    events:
+      - s3: oktankpets-demo-${self:custom.stage}
+
+ # identify:
+ #   runtime: python3.8
+ #   package:
+ #     include:
+ #       - util/identify.py
+ #   handler: src/util/identify.identify
+ #   events:
+ #     - sqs: arn:aws:sqs:us-east-1:XXXXXX:MyFirstQueue
+
   pets:
+    runtime: java8
     handler: com.oktank.demo.StreamLambdaHandler::handleRequest
+    package:
+      artifact: target/oktankdemo-1.0-lambda-package.zip
     events:
       - http:
           path: /pets
@@ -147,6 +168,24 @@ resources:
                   Action:
                     - s3:PutObject
                   Resource: '*'
+          - PolicyName: SQSPolicy
+              PolicyDocument:
+                Version: '2012-10-17'
+                Statement:
+                  - Effect: Allow
+                    Action:
+                      - sqs:ReceiveMessage
+                      - sqs:DeleteMessage
+                      - sqs:GetQueueAttributes
+                    Resource: '*'
+          - PolicyName: RekognitionPolicy
+              PolicyDocument:
+                Version: '2012-10-17'
+                Statement:
+                  - Effect: Allow
+                    Action:
+                      - rekognition:DetectLabels
+                    Resource: '*'
           - PolicyName: RDSDataPolicy
             PolicyDocument:
               Version: '2012-10-17'

@@ -14,12 +14,20 @@ package com.oktank.demo.controller;
 
 
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.rdsdata.model.ExecuteStatementResult;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.oktank.demo.model.Pet;
 import com.oktank.demo.model.PetData;
 
 import com.oktank.demo.service.DataService;
 
+import com.oktank.demo.service.S3UploadService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +38,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.io.File;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
+import java.util.Base64;
 
 import com.amazonaws.services.rdsdata.model.Field;
 
@@ -48,6 +58,10 @@ public class PetsController {
         }
         Pet dbPet = newPet;
         dbPet.setId(UUID.randomUUID().toString());
+
+        S3UploadService s3 = S3UploadService.getInstance();
+
+        s3.UploadBase64(dbPet.getPhotoBase64(), dbPet.getId()+".jpg");
 
         DataService ds = DataService.getInstance();
         ExecuteStatementResult result = ds.Query(String.format("INSERT INTO pets (id, name, breed, photo_url) VALUES (\'%s\', \'%s\', \'%s\', \'%s\')", dbPet.getId(), dbPet.getName(), dbPet.getBreed(), dbPet.getPhotoUrl()));
