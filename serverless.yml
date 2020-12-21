@@ -37,8 +37,8 @@ provider:
       Fn::GetAtt:
         - SQSQueue
         - Arn
-      QUEUE_URL:
-        Ref: SQSQueue
+    QUEUE_URL:
+      Ref: SQSQueue
 
 package:
   individually: true
