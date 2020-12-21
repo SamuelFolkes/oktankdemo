@@ -23,6 +23,7 @@ public class S3UploadService {
     }
 
     public void UploadBase64(String imgData, String keyName) {
+        System.out.println(imgData);
         String bucketName = System.getenv("BUCKET_NAME");
         byte[] bI = Base64.getDecoder().decode((imgData.substring(imgData.indexOf(",")+1)).getBytes());
         InputStream fIs = new ByteArrayInputStream(bI);
