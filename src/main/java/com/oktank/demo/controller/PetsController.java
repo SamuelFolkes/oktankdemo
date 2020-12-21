@@ -109,14 +109,14 @@ public class PetsController {
         return newPet;
     }
 
-    /*@RequestMapping(path = "/pets/identify", method = RequestMethod.GET)
-    public Pet listPets() {
+    @RequestMapping(path = "/pets/identify", method = RequestMethod.GET)
+    public Pet Identify() {
         Pet newPet = new Pet();
         newPet.setId(UUID.randomUUID().toString());
         newPet.setBreed(PetData.getRandomBreed());
         //newPet.setDateOfBirth(PetData.getRandomDoB());
         newPet.setName(PetData.getRandomName());
         return newPet;
-    }*/
+    }
 }
 

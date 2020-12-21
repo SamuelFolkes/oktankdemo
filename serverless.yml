@@ -35,8 +35,8 @@ provider:
     IDENTIFY_BUCKET_NAME: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
     QUEUE_ARN:
       Fn::GetAtt:
-        - "SQSQueue"
-        - "Arn"
+        - SQSQueue
+        - Arn
       QUEUE_URL:
         Ref: SQSQueue
 
@@ -117,7 +117,8 @@ resources:
   Resources:
     IdentifyS3Bucket:
       Type: AWS::S3::Bucket
-      BucketName: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
+      Properties:
+        BucketName: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
     SQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:
