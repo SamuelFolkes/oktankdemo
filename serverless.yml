@@ -185,7 +185,7 @@ resources:
               Statement:
                 - Effect: Allow
                   Action:
-                    - rekognition:DetectLabels
+                    - rekognition:*
                   Resource: '*'
           - PolicyName: RDSDataPolicy
             PolicyDocument:
