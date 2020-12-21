@@ -32,26 +32,29 @@ provider:
     DB_CLUSTER_ARN: ${self:custom.environment.DB_CLUSTER_ARN.${self:custom.stage}}
     SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
     BUCKET_NAME: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+    IDENTIFY_BUCKET_NAME: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
+    QUEUE_ARN:
+      Fn::GetAtt:
+        - "SQSQueue"
+        - "Arn"
+      QUEUE_URL:
+        Ref: SQSQueue
 
 package:
   individually: true
 
 functions:
- # resize:
- #   runtime: python3.8
- #   package:
- #     artifact: src/util/resize/resize.zip
- #   handler: resize.lambda_handler
- #   events:
- #     - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
-
-  #identify:
-  #  runtime: python3.8
-  #  package:
-  #    artifact: src/util/identify/identify.zip
-  #  handler: identify.lambda_handler
-  #  events:
-  #    - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+  identify:
+    runtime: python3.8
+    package:
+      artifact: src/util/identify/identify.zip
+    handler: identify.lambda_handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn
 
   resize:
     runtime: python3.8
@@ -112,6 +115,13 @@ functions:
 #resources
 resources:
   Resources:
+    IdentifyS3Bucket:
+      Type: AWS::S3::Bucket
+      BucketName: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
+    SQSQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "oktankdemo-queue"
     CognitoUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
@@ -227,6 +237,13 @@ resources:
                     - xray:PutTelemetryRecords
                   Resource: '*'
   Outputs:
+    SQSQueueArn:
+      Value:
+        Fn::GetAtt:
+          - SQSQueue
+          - Arn
+      Export:
+        Name: SQSQueueArn-${self:custom.stage}
     CognitoUserPoolArn:
       Value:
         Fn::GetAtt:

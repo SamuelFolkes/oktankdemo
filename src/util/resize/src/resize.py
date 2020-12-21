@@ -17,9 +17,12 @@ def lambda_handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
         key = unquote_plus(record['s3']['object']['key'])
+        if 'thumbs' in key:
+            continue
         tmpkey = key.replace('/', '')
         download_path = '/tmp/{}{}'.format(uuid.uuid4(), tmpkey)
         upload_path = '/tmp/resized-{}'.format(tmpkey)
         s3_client.download_file(bucket, key, download_path)
         resize_image(download_path, upload_path)
-        s3_client.upload_file(upload_path, bucket, 'resized'+key)
+        s3_client.upload_file(upload_path, bucket, 'thumbs/'+key)
+        boto3.resource('s3').ObjectAcl(bucket,'thumbs/'+key).put(ACL='public-read')
