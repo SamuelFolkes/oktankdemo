@@ -40,9 +40,8 @@ functions:
   resize:
     runtime: python3.8
     package:
-      include:
-        - util/resize.py
-    handler: src/util/resize.lambda_handler
+      artifact: util/resize/resize.zip
+    handler: resize.lambda_handler
     events:
       - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
