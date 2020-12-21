@@ -44,26 +44,6 @@ package:
   individually: true
 
 functions:
-  identify:
-    runtime: python3.8
-    package:
-      artifact: src/util/identify/identify.zip
-    handler: identify.lambda_handler
-    events:
-      - sqs:
-          arn:
-            Fn::GetAtt:
-              - SQSQueue
-              - Arn
-
-  resize:
-    runtime: python3.8
-    package:
-      artifact: src/util/resize/dist/resize.zip
-    handler: resize.lambda_handler
-    events:
-      - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
-
   pets:
     runtime: java8
     handler: com.oktank.demo.StreamLambdaHandler::handleRequest
@@ -111,6 +91,26 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: true
     timeout: 30
+
+  identify:
+    runtime: python3.8
+    package:
+      artifact: src/util/identify/identify.zip
+    handler: identify.lambda_handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn
+
+  resize:
+    runtime: python3.8
+    package:
+      artifact: src/util/resize/dist/resize.zip
+    handler: resize.lambda_handler
+    events:
+      - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
 #resources
 resources:
