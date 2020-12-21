@@ -37,13 +37,13 @@ package:
   individually: true
 
 functions:
-  resize:
-    runtime: python3.8
-    package:
-      artifact: src/util/resize/resize.zip
-    handler: resize.lambda_handler
-    events:
-      - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+ # resize:
+ #   runtime: python3.8
+ #   package:
+ #     artifact: src/util/resize/resize.zip
+ #   handler: resize.lambda_handler
+ #   events:
+ #     - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
   identify:
     runtime: python3.8
