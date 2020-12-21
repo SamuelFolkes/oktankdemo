@@ -16,6 +16,7 @@ import com.amazonaws.services.rdsdata.model.ExecuteStatementResult;
 import com.oktank.demo.model.Pet;
 import com.oktank.demo.model.PetData;
 
+import com.oktank.demo.model.PetImage;
 import com.oktank.demo.service.DataService;
 
 import com.oktank.demo.service.S3UploadService;
@@ -109,14 +110,14 @@ public class PetsController {
         return newPet;
     }
 
-    @RequestMapping(path = "/pets/identify", method = RequestMethod.GET)
-    public Pet Identify() {
-        Pet newPet = new Pet();
-        newPet.setId(UUID.randomUUID().toString());
-        newPet.setBreed(PetData.getRandomBreed());
-        //newPet.setDateOfBirth(PetData.getRandomDoB());
-        newPet.setName(PetData.getRandomName());
-        return newPet;
+    @RequestMapping(path = "/pets/identify", method = RequestMethod.POST)
+    public Pet Identify(@RequestBody PetImage image) {
+
+        if(image.getImageData() == null) {
+            return null;
+        }
+
+        
     }
 }
 
