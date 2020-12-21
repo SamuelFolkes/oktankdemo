@@ -45,11 +45,19 @@ functions:
  #   events:
  #     - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
-  identify:
+  #identify:
+  #  runtime: python3.8
+  #  package:
+  #    artifact: src/util/identify/identify.zip
+  #  handler: identify.lambda_handler
+  #  events:
+  #    - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+
+  resize:
     runtime: python3.8
     package:
-      artifact: src/util/identify/identify.zip
-    handler: identify.lambda_handler
+      artifact: src/util/resize/dist/resize.zip
+    handler: resize.lambda_handler
     events:
       - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
@@ -167,7 +175,9 @@ resources:
               Statement:
                 - Effect: Allow
                   Action:
+                    - s3:GetObject
                     - s3:PutObject
+                    - s3:PutObjectAcl
                   Resource: '*'
           - PolicyName: SQSPolicy
             PolicyDocument:

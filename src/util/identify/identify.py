@@ -24,7 +24,7 @@ def identify(bucket,key):
                 },
             },
             MaxLabels=10,
-            MinConfidence=80,
+            MinConfidence=90,
         )
         print(response)
     except ClientError as e:
