@@ -179,13 +179,13 @@ resources:
                     - sqs:GetQueueAttributes
                   Resource: '*'
           - PolicyName: RekognitionPolicy
-              PolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                  - Effect: Allow
-                    Action:
-                      - rekognition:DetectLabels
-                    Resource: '*'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - rekognition:DetectLabels
+                  Resource: '*'
           - PolicyName: RDSDataPolicy
             PolicyDocument:
               Version: '2012-10-17'
