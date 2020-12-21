@@ -26,6 +26,8 @@ phases:
       - mvn clean package
       - cd $CODEBUILD_SRC_DIR/src/util/resize
       - zip -r resize.zip .
+      - cd $CODEBUILD_SRC_DIR/src/util/identify
+      - zip -r identify.zip .
       - cd $CODEBUILD_SRC_DIR
       ##################################### Generate serverless package. ###################################
       - . ./aws-profile-setup.sh

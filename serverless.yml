@@ -45,14 +45,13 @@ functions:
     events:
       - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
- # identify:
- #   runtime: python3.8
- #   package:
- #     include:
- #       - util/identify.py
- #   handler: src/util/identify.identify
- #   events:
- #     - sqs: arn:aws:sqs:us-east-1:XXXXXX:MyFirstQueue
+  identify:
+    runtime: python3.8
+    package:
+      artifact: src/util/identify/identify.zip
+    handler: identify.lambda_handler
+    events:
+      - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
   pets:
     runtime: java8
