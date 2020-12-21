@@ -117,7 +117,7 @@ public class PetsController {
             return null;
         }
 
-        
+        return new Pet();
     }
 }
 
