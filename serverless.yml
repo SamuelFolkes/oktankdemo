@@ -169,15 +169,15 @@ resources:
                     - s3:PutObject
                   Resource: '*'
           - PolicyName: SQSPolicy
-              PolicyDocument:
-                Version: '2012-10-17'
-                Statement:
-                  - Effect: Allow
-                    Action:
-                      - sqs:ReceiveMessage
-                      - sqs:DeleteMessage
-                      - sqs:GetQueueAttributes
-                    Resource: '*'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - sqs:ReceiveMessage
+                    - sqs:DeleteMessage
+                    - sqs:GetQueueAttributes
+                  Resource: '*'
           - PolicyName: RekognitionPolicy
               PolicyDocument:
                 Version: '2012-10-17'
