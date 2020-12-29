@@ -20,7 +20,7 @@ public class SQSService {
         return single_instance;
     }
 
-    public void SendMessage(Employee employee)
+    public void SendNotifyMessage(Employee employee)
     {
         try {
             AmazonSQS sqs = AmazonSQSClientBuilder.standard()
@@ -35,6 +35,44 @@ public class SQSService {
             msg.setVerified(employee.getVerified());
             msg.setName(employee.getName());
             msg.setMessageType("request");
+
+            ObjectMapper Obj = new ObjectMapper();
+            String jsonStr = Obj.writeValueAsString(msg);
+
+            System.out.println(jsonStr);
+
+            SendMessageRequest send_msg_request = new SendMessageRequest()
+                    .withQueueUrl(queueUrl)
+                    .withMessageBody(jsonStr)
+                    .withDelaySeconds(5);
+            sqs.sendMessage(send_msg_request);
+
+        } catch (AmazonServiceException e) {
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SendVerifyMessage(Employee employee)
+    {
+        try {
+            AmazonSQS sqs = AmazonSQSClientBuilder.standard()
+                    .withRegion("us-east-1")
+                    .build();
+
+            String queueUrl = System.getenv("VERIFY_QUEUE_URL");
+
+            VerifyMessage msg = new VerifyMessage();
+            msg.setId(employee.getId());
+            msg.setEmail(employee.getEmail());
+            msg.setVerified(employee.getVerified());
+            msg.setName(employee.getName());
+            msg.setMessageType("response");
 
             ObjectMapper Obj = new ObjectMapper();
             String jsonStr = Obj.writeValueAsString(msg);

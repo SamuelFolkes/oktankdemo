@@ -24,10 +24,10 @@ phases:
       - echo Build started on `date`
       - cd $CODEBUILD_SRC_DIR
       - mvn clean package
-      - cd $CODEBUILD_SRC_DIR/src/util/resize/dist
-      - zip -r resize.zip .
-      - cd $CODEBUILD_SRC_DIR/src/util/identify
-      - zip -r identify.zip .
+      - cd $CODEBUILD_SRC_DIR/src/util/notify
+      - zip -r notify.zip .
+      - cd $CODEBUILD_SRC_DIR/src/util/verify
+      - zip -r verify.zip .
       - cd $CODEBUILD_SRC_DIR
       ##################################### Generate serverless package. ###################################
       - . ./aws-profile-setup.sh

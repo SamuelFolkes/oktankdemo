@@ -39,12 +39,12 @@ provider:
         - Arn
     NOTIFY_QUEUE_URL:
       Ref: NotifySQSQueue
-    REKOGNTION_QUEUE_ARN:
+    VERIFY_QUEUE_ARN:
       Fn::GetAtt:
-        - RekognitionSQSQueue
+        - VerifySQSQueue
         - Arn
-    REKOGNITION_QUEUE_URL:
-      Ref: RekognitionSQSQueue
+    VERIFY_QUEUE_URL:
+      Ref: VerifySQSQueue
 
 package:
   individually: true
@@ -98,25 +98,39 @@ functions:
             allowCredentials: true
     timeout: 30
 
-  identify:
+  notify:
     runtime: python3.8
     package:
-      artifact: src/util/identify/identify.zip
-    handler: identify.lambda_handler
+      artifact: src/util/notify/notify.zip
+    handler: notify.lambda_handler
     events:
       - sqs:
           arn:
             Fn::GetAtt:
-              - SQSQueue
+              - NotifySQSQueue
               - Arn
 
-  resize:
+  verify:
     runtime: python3.8
     package:
-      artifact: src/util/resize/dist/resize.zip
-    handler: resize.lambda_handler
+      artifact: src/util/verify/verify.zip
+    handler: verify.lambda_handler
     events:
-      - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - VerifySQSQueue
+              - Arn
+
+
+
+  #resize:
+  #  runtime: python3.8
+  #  package:
+  #    artifact: src/util/resize/dist/resize.zip
+  #  handler: resize.lambda_handler
+  #  events:
+  #    - s3: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
 
 #resources
 resources:
@@ -129,10 +143,10 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "oktankdemo-notify-queue"
-    RekognitionSQSQueue:
+    VerifySQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "oktankdemo-rekognition-queue"
+        QueueName: "oktankdemo-verify-queue"
     CognitoUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
@@ -255,13 +269,13 @@ resources:
           - Arn
       Export:
         Name: NotifySQSQueueArn-${self:custom.stage}
-    RekognitionSQSQueueArn:
+    VerifySQSQueueArn:
       Value:
         Fn::GetAtt:
-          - RekognitionSQSQueue
+          - VerifySQSQueue
           - Arn
       Export:
-        Name: RekognitionSQSQueueArn-${self:custom.stage}
+        Name: VerifySQSQueueArn-${self:custom.stage}
     CognitoUserPoolArn:
       Value:
         Fn::GetAtt:

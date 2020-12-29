@@ -3,8 +3,10 @@ package com.oktank.demo.controller;
 import com.amazonaws.services.rdsdata.model.ExecuteStatementResult;
 import com.amazonaws.services.rdsdata.model.Field;
 import com.oktank.demo.model.Employee;
+import com.oktank.demo.model.VerifyRequest;
 import com.oktank.demo.service.DataService;
 import com.oktank.demo.service.S3UploadService;
+import com.oktank.demo.service.SQSService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,40 @@ import java.util.UUID;
 @RestController
 @EnableWebMvc
 public class EmployeesController {
+
+
+    @RequestMapping(path = "/employees/verify", method = RequestMethod.POST)
+    public ResponseEntity<Employee> verifyEmployee(@RequestBody VerifyRequest req) {
+
+        //get emp
+        DataService ds = DataService.getInstance();
+        ExecuteStatementResult result = ds.Query("select * from employees where id="+req.getId()); //***
+        List<Field> record = result.getRecords().get(0);
+
+        Employee employee = new Employee();
+        employee.setId(record.get(0).getStringValue());
+        employee.setName(record.get(1).getStringValue());
+        employee.setDepartment(record.get(2).getStringValue());
+        employee.setEmail(record.get(3).getStringValue());
+        employee.setIdPhoto(record.get(4).getStringValue());
+        employee.setVerified(record.get(5).getBooleanValue());
+
+        // upload img
+        S3UploadService s3 = S3UploadService.getInstance();
+        s3.UploadBase64(req.getPhotoBase64(), "verifications/"+employee.getId()+".jpg");
+
+        //send sqs msg
+        SQSService sqs = SQSService.getInstance();
+        sqs.SendVerifyMessage(employee);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin","*");
+        responseHeaders.set("Access-Control-Allow-Credentials","true");
+        ResponseEntity responseEntity = new ResponseEntity(employee,responseHeaders, HttpStatus.OK);
+        return responseEntity;
+
+    }
+
     @RequestMapping(path = "/employees", method = RequestMethod.POST)
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee newEmployee) {
         if (newEmployee.getName() == null || newEmployee.getDepartment() == null) {
@@ -33,6 +69,10 @@ public class EmployeesController {
 
         DataService ds = DataService.getInstance();
         ExecuteStatementResult result = ds.Query(String.format("INSERT INTO employees (id, name, department, photo_key, email, verified) VALUES (\'%s\', \'%s\', \'%s\', \'%s\')", dbEmployee.getId(), dbEmployee.getName(), dbEmployee.getDepartment(), dbEmployee.getId()+".jpg", dbEmployee.getEmail(), dbEmployee.getVerified()));
+
+        //send sqs msg
+        SQSService sqs = SQSService.getInstance();
+        sqs.SendNotifyMessage(dbEmployee);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Access-Control-Allow-Origin","*");
