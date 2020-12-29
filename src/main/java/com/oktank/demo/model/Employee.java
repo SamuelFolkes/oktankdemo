@@ -5,7 +5,7 @@ public class Employee {
     private String department;
     private String name;
     private String email;
-    private Boolean verified;
+    private Boolean verified = false;
     private String idPhoto;
     private String photoBase64;
 
