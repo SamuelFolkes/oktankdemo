@@ -53,7 +53,7 @@ def lambda_handler(event,context):
 
 def send_email(subject,body,recipient):
     ses = boto3.client('ses')
-    sender = 'verifications@dev.oktank.fastdemo.me'
+    sender = 'samfolke@amazon.com'
     try:
         response = ses.send_email(
             Destination={

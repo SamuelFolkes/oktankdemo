@@ -32,7 +32,7 @@ provider:
     DB_CLUSTER_ARN: ${self:custom.environment.DB_CLUSTER_ARN.${self:custom.stage}}
     SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
     #BUCKET_NAME: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
-    BUCKET_NAME: oktankpets-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
+    BUCKET_NAME: oktank-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
     NOTIFY_QUEUE_ARN:
       Fn::GetAtt:
         - NotifySQSQueue
@@ -138,7 +138,7 @@ resources:
     VerifyS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: oktankpets-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
+        BucketName: oktank-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
     NotifySQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:
@@ -260,6 +260,15 @@ resources:
                   Action:
                     - xray:PutTraceSegments
                     - xray:PutTelemetryRecords
+                  Resource: '*'
+          - PolicyName: SESPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - ses:SendEmail
+                    - ses.SendRawEmail
                   Resource: '*'
   Outputs:
     NotifySQSQueueArn:
