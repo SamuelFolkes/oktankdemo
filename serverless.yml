@@ -31,8 +31,8 @@ provider:
   environment:
     DB_CLUSTER_ARN: ${self:custom.environment.DB_CLUSTER_ARN.${self:custom.stage}}
     SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
-    BUCKET_NAME: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
-    IDENTIFY_BUCKET_NAME: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
+    #BUCKET_NAME: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
+    BUCKET_NAME: oktankpets-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
     NOTIFY_QUEUE_ARN:
       Fn::GetAtt:
         - NotifySQSQueue
@@ -135,10 +135,10 @@ functions:
 #resources
 resources:
   Resources:
-    IdentifyS3Bucket:
+    VerifyS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
+        BucketName: oktankpets-demo-verify-${self:custom.environmentLower.${self:custom.stage}}
     NotifySQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:
