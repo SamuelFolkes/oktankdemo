@@ -18,9 +18,9 @@ sqs = boto3.client('sqs')
 
 def lambda_handler(message, context):
     print(json.dumps(message))
-    verification_id = json.loads(message["Records"][0]["body"])["verification_id"]
-    id = json.loads(message["Records"][0]["body"])["subject_photo_id_key"]
-    image = json.loads(message["Records"][0]["body"])["subject_photo_key"]
+    verification_id = json.loads(message["Records"][0]["body"])["id"]
+    id = json.loads(message["Records"][0]["body"])["idPhoto"]
+    image = 'verifications/'+json.loads(message["Records"][0]["body"])["idPhoto"]
     print("id:",id,"image:",image)
     client = boto3.client('rekognition')
     verified = False
@@ -29,15 +29,13 @@ def lambda_handler(message, context):
         rekognitionResponse = client.compare_faces(
             SourceImage={
                 "S3Object": {
-                    "Bucket": "valid8-images-v2",
-                    #	"Name": "sampleID.png"
+                    "Bucket": os.environ['BUCKET_NAME'],
                     "Name": id
                 }
             },
             TargetImage={
                 "S3Object": {
-                    "Bucket": "valid8-images-v2",
-                    #	"Name": "image.png"
+                    "Bucket": os.environ['BUCKET_NAME'],
                     "Name": image
                 }
             },
@@ -51,10 +49,10 @@ def lambda_handler(message, context):
     except ClientError as e:
         verified = False
 
-    sqs_url = 'https://sqs.us-east-1.amazonaws.com/664940478983/valid8-notify'
+    sqs_url = os.environ['NOTIFY_QUEUE_URL']
     response = sqs.send_message(
         QueueUrl=sqs_url,
-        MessageBody=(json.dumps({'message_type':'response','entity_id':'Oktank','requester_email':'samfolke@amazon.com','subject_name':'Walter White','verification_id': verification_id, 'verified':verified}))
+        MessageBody=(json.dumps({'message_type':'response','entity_id':'OKTANK','requester_email':'samfolke@amazon.com','subject_name':'Samuel Folkes','verification_id': verification_id, 'verified':verified}))
     )
     print(json.dumps((json.dumps({'verification_id': verification_id, 'verified':verified}))))
     return {
