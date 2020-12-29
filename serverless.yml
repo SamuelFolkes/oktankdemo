@@ -33,25 +33,31 @@ provider:
     SECRET_ARN: ${self:custom.environment.SECRET_ARN.${self:custom.stage}}
     BUCKET_NAME: oktankpets-demo-${self:custom.environmentLower.${self:custom.stage}}
     IDENTIFY_BUCKET_NAME: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
-    QUEUE_ARN:
+    NOTIFY_QUEUE_ARN:
       Fn::GetAtt:
-        - SQSQueue
+        - NotifySQSQueue
         - Arn
-    QUEUE_URL:
-      Ref: SQSQueue
+    NOTIFY_QUEUE_URL:
+      Ref: NotifySQSQueue
+    REKOGNTION_QUEUE_ARN:
+      Fn::GetAtt:
+        - RekognitionSQSQueue
+        - Arn
+    REKOGNITION_QUEUE_URL:
+      Ref: RekognitionSQSQueue
 
 package:
   individually: true
 
 functions:
-  pets:
+  employees:
     runtime: java8
     handler: com.oktank.demo.StreamLambdaHandler::handleRequest
     package:
       artifact: target/oktankdemo-1.0-lambda-package.zip
     events:
       - http:
-          path: /pets
+          path: /employees
           method: get
           authorizer:
             type: COGNITO_USER_POOLS
@@ -71,7 +77,7 @@ functions:
                 - X-Amz-User-Agent
               allowCredentials: true
       - http:
-          path: /pets
+          path: /employees
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
@@ -119,10 +125,14 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: oktankpets-demo-identify-${self:custom.environmentLower.${self:custom.stage}}
-    SQSQueue:
+    NotifySQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: "oktankdemo-queue"
+        QueueName: "oktankdemo-notify-queue"
+    RekognitionSQSQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "oktankdemo-rekognition-queue"
     CognitoUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
@@ -238,13 +248,20 @@ resources:
                     - xray:PutTelemetryRecords
                   Resource: '*'
   Outputs:
-    SQSQueueArn:
+    NotifySQSQueueArn:
       Value:
         Fn::GetAtt:
-          - SQSQueue
+          - NotifySQSQueue
           - Arn
       Export:
-        Name: SQSQueueArn-${self:custom.stage}
+        Name: NotifySQSQueueArn-${self:custom.stage}
+    RekognitionSQSQueueArn:
+      Value:
+        Fn::GetAtt:
+          - RekognitionSQSQueue
+          - Arn
+      Export:
+        Name: RekognitionSQSQueueArn-${self:custom.stage}
     CognitoUserPoolArn:
       Value:
         Fn::GetAtt:
