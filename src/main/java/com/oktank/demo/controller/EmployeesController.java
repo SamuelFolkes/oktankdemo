@@ -68,7 +68,7 @@ public class EmployeesController {
         s3.UploadBase64(dbEmployee.getPhotoBase64(), dbEmployee.getId()+".jpg");
 
         DataService ds = DataService.getInstance();
-        ExecuteStatementResult result = ds.Query(String.format("INSERT INTO employees (id, name, department, photo_key, email, verified) VALUES (\'%s\', \'%s\', \'%s\', \'%s\')", dbEmployee.getId(), dbEmployee.getName(), dbEmployee.getDepartment(), dbEmployee.getId()+".jpg", dbEmployee.getEmail(), dbEmployee.getVerified()));
+        ExecuteStatementResult result = ds.Query(String.format("INSERT INTO employees (id, name, department, photo_key, email, verified) VALUES (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')", dbEmployee.getId(), dbEmployee.getName(), dbEmployee.getDepartment(), dbEmployee.getId()+".jpg", dbEmployee.getEmail(), dbEmployee.getVerified()));
 
         //send sqs msg
         SQSService sqs = SQSService.getInstance();
