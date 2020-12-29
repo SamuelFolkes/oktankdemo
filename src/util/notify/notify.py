@@ -40,10 +40,10 @@ def lambda_handler(event,context):
     for record in event['Records']:
         payload=json.loads(record["body"])
 
-        if(payload['message_type']=='request'):
+        if(payload['messageType']=='request'):
             body = format_request_email(payload['id'],"OKTANK",payload['name'])
             send_email("Oktank Identity Verification Request",body,"samfolke@amazon.com")
-        elif(payload['message_type']=='response'):
+        elif(payload['messageType']=='response'):
             if(payload['verified']==True):
                 body = format_verified_response_email(payload['id'],payload['name'])
                 send_email("Oktank Identity Verification Response",body,"samfolke@amazon.com")
@@ -186,7 +186,7 @@ def format_request_email(verification_id,entity_id,subject_fname):
         </style>
     </head>
     <body class="" style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">ValID8 verification request.</span>
+        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">OKTANK verification request.</span>
         <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
         <tr>
             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
@@ -357,7 +357,7 @@ def format_verified_response_email(verification_id,subject_name):
         </style>
     </head>
     <body class="" style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">ValID8 verification response.</span>
+        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">OKTANK verification response.</span>
         <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
         <tr>
             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
@@ -405,7 +405,7 @@ def format_verified_response_email(verification_id,subject_name):
                 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                     <tr>
                     <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
-                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">&copy; ValID8</span>
+                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">&copy; OKTANK</span>
                     </td>
                     </tr>
                     <tr>
@@ -527,7 +527,7 @@ def format_failure_response_email(verification_id,subject_name):
         </style>
     </head>
     <body class="" style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">ValID8 verification response.</span>
+        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">OKTANK verification response.</span>
         <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
         <tr>
             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
@@ -575,7 +575,7 @@ def format_failure_response_email(verification_id,subject_name):
                 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                     <tr>
                     <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
-                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">&copy; ValID8</span>
+                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">&copy; OKTANK</span>
                     </td>
                     </tr>
                     <tr>

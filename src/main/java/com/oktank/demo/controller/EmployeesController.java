@@ -39,6 +39,14 @@ public class EmployeesController {
         employee.setIdPhoto(record.get(4).getStringValue());
         employee.setVerified(record.get(5).getBooleanValue());
 
+        if(employee.getVerified()) {
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("Access-Control-Allow-Origin","*");
+            responseHeaders.set("Access-Control-Allow-Credentials","true");
+            ResponseEntity responseEntity = new ResponseEntity(employee,responseHeaders, HttpStatus.BAD_REQUEST);
+            return responseEntity;
+        }
+
         // upload img
         S3UploadService s3 = S3UploadService.getInstance();
         s3.UploadBase64(req.getPhotoBase64(), "verifications/"+employee.getId()+".jpg");
