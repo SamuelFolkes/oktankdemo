@@ -220,6 +220,7 @@ resources:
               Statement:
                 - Effect: Allow
                   Action:
+                    - sqs:SendMessage
                     - sqs:ReceiveMessage
                     - sqs:DeleteMessage
                     - sqs:GetQueueAttributes
