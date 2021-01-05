@@ -5,6 +5,7 @@ import com.amazonaws.services.rdsdata.AWSRDSDataClient;
 import com.amazonaws.services.rdsdata.model.ExecuteStatementRequest;
 import com.amazonaws.services.rdsdata.model.ExecuteStatementResult;
 import com.amazonaws.services.rdsdata.model.Field;
+import com.oktank.demo.model.Employee;
 
 import java.util.List;
 
@@ -30,4 +31,11 @@ public class DataService {
 
         return rdsData.executeStatement(request);
     }
+
+    /*public Employee SelectSingle(String id) {
+        RdsDataClient client = RdsDataClient.builder().database("oktankdemo")
+                .resourceArn(System.getenv("DB_CLUSTER_ARN"))
+                .secretArn(System.getenv("SECRET_ARN")).build();
+        return client.forSql("select * from accounts").execute().mapToSingle(Employee.class);
+    }*/
 }

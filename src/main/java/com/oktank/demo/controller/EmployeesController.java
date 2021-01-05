@@ -28,8 +28,9 @@ public class EmployeesController {
 
         //get emp
         DataService ds = DataService.getInstance();
-        ExecuteStatementResult result = ds.Query("select * from employees where id="+req.getId()); //***
+        ExecuteStatementResult result = ds.Query("SELECT * FROM employees WHERE id='"+req.getId()+"'"); //***
         List<Field> record = result.getRecords().get(0);
+        System.out.println(String.format("SelectedName = %s", record.get(1).getStringValue()));
 
         Employee employee = new Employee();
         employee.setId(record.get(0).getStringValue());
@@ -38,6 +39,10 @@ public class EmployeesController {
         employee.setEmail(record.get(3).getStringValue());
         employee.setIdPhoto(record.get(4).getStringValue());
         employee.setVerified(record.get(5).getBooleanValue());
+
+        /*Employee result = client.forSql("SELECT * FROM employees WHERE id="+req.getId())
+                .execute()
+                .mapToSingle(Employee.class);*/
 
         if(employee.getVerified()) {
             HttpHeaders responseHeaders = new HttpHeaders();
