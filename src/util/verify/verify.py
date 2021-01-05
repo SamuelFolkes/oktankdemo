@@ -22,8 +22,9 @@ def lambda_handler(message, context):
     verification_id = json.loads(message["Records"][0]["body"])["id"]
     id = json.loads(message["Records"][0]["body"])["id"]
     name = json.loads(message["Records"][0]["body"])["name"]
-    image = 'verifications/'+json.loads(message["Records"][0]["body"])["id"]+'.jpg'
-    print("id:",id,"image:",image)
+    source_image = json.loads(message["Records"][0]["body"])["id"]+'.jpg'
+    target_image = 'verifications/'+json.loads(message["Records"][0]["body"])["id"]+'.jpg'
+    print("id: "+id+", target_image: "+target_image+", source_image "+source_image)
     client = boto3.client('rekognition')
     verified = False
 
@@ -32,30 +33,32 @@ def lambda_handler(message, context):
             SourceImage={
                 "S3Object": {
                     "Bucket": os.environ['BUCKET_NAME'],
-                    "Name": id
+                    "Name": source_image
                 }
             },
             TargetImage={
                 "S3Object": {
                     "Bucket": os.environ['BUCKET_NAME'],
-                    "Name": image
+                    "Name": target_image
                 }
             },
             SimilarityThreshold=90,
 
         )
+        print(rekognitionResponse)
         if len(rekognitionResponse["FaceMatches"]) > 0:
             verified = True
             updateRecord(id)
         else:
             verified = False
     except ClientError as e:
+        print(e)
         verified = False
 
     sqs_url = os.environ['NOTIFY_QUEUE_URL']
     response = sqs.send_message(
         QueueUrl=sqs_url,
-        MessageBody=(json.dumps({'message_type':'response','entity_id':'OKTANK','requester_email':'samfolke@amazon.com','subject_name':name,'verification_id': verification_id, 'verified':verified}))
+        MessageBody=(json.dumps({'messageType':'response','id':id,'entity_id':'OKTANK','requester_email':'samfolke@amazon.com','subject_name':name,'verification_id': verification_id, 'verified':verified}))
     )
     print(json.dumps((json.dumps({'verification_id': verification_id, 'verified':verified}))))
     return {
@@ -64,6 +67,7 @@ def lambda_handler(message, context):
     }
 
 def updateRecord(id):
+    print('id verified')
     rds = boto3.client('rds-data')
     cluster_arn = os.environ['DB_CLUSTER_ARN']
     secret_arn = os.environ['SECRET_ARN']
@@ -75,5 +79,3 @@ def updateRecord(id):
         sql = "update employees set verified = true where id ='"+id+"'")
 
     print(result)
-
-
